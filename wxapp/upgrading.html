@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="象棋支招大师维护通告">
+    <meta name="author" content="">
+    <title>象棋支招大师维护通告</title>
+
+    <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/user.css?_dc=bbbc">
+    <script src="assets/lib/jquery/jquery-2.1.0.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/knockout-3.2.0.d.js"></script>
+    <script src="assets/lib/knockout.mapping.js"></script>
+    <style>
+      body{
+        margin: 0;
+        padding: 0;
+        color: #f00;
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: '微软雅黑';
+      }
+      .region{
+        width: 100%;
+        padding: 20px;
+        padding-top: 30%;
+        text-align: center;
+      }
+    </style>
+    <script type="text/javascript">
+      $(function(){
+        var srcdata = {
+          v1: 123,
+          ary: [{id:1,name:'n1'},{id:2,name:'n2'},{id:3,name:'n3'},{id:4,name:'n4'}],
+          v2: 'abc'
+        };
+        var vdata = {
+          k: null
+        };
+        vdata.k = ko.mapping.fromJS(srcdata);
+        ko.applyBindings(vdata);
+        console.log(vdata);
+
+        var list = vdata.k.ary();
+        var member = list[2];
+        member.name('modified_name');
+        console.log(vdata);
+
+      });
+    </script>
+  </head>
+  
+  <body sroll="no">
+    <div class="region">
+      <p>
+        系统正在进行破茧重生的升级维护，过两天再来看看，没准会有惊喜哦~ 
+      </p>
+    </div>
+  </body>
+</html>

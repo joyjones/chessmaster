@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="description" content="象棋支招大师">
+	<meta name="author" content="">
+	<title>象棋支招大师 v0.81</title>
+
+	<link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/main.css?_dc=aaaaabbbb">
+	<script src="assets/lib/jquery/jquery-2.1.0.min.js"></script>
+	<script src="assets/lib/jquery/jquery.tmpl.min.js"></script>
+	<script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/lib/vmouse.js?_dc=aaaaaaaaa"></script>
+	<script src="assets/lib/knockout-3.2.0.js"></script>
+	<script src="assets/lib/knockout.mapping.js"></script>
+	<script src="assets/lib/jweixin-1.0.0.js"></script>
+	<script src="assets/js/defines.js?_dc=aaaevbbb"></script>
+	<script src="assets/js/app.js?_dc=meoexwkf"></script>
+	<script src="assets/js/board.js?_dc=ccccddddd"></script>
+	<script src="assets/js/main.js?_dc=ghhhhhhhh"></script>
+</head>
+
+<body sroll="no">
+	<!-- 主体 -->
+	<div id="sec_main" class="sec" data-bind="style: {
+												width: stat.scrsize().w + 'px',
+												height: stat.scrsize().h + 'px'
+											}">
+		<!-- 主体-顶部 -->
+		<div class="topbar hori fullw" data-bind="style: {height: stat.ui.titleH() + 'px'}">
+			<div class="user hori fullh" data-bind="style: {
+														padding: stat.ui.topSidePad() + 'px'
+													}, event: {
+														vclick: main.showMenu
+													}">
+				<div class="head hori fullh">
+					<img src="" data-bind="attr: {
+												width: stat.ui.topInnerH() + 'px', height: stat.ui.topInnerH() + 'px',
+												src: env.vars.kdata.user.headimgurl()
+											}">
+				</div>
+				<div class="info hori fullh">
+					<div class="vip halfh" data-bind="style: {'line-height': stat.ui.topLineH() + 'px'}">
+						<img class="" height="18" width="18" data-bind="attr: {src: 'assets/images/vip'+vars.curVip().id+'.png'}">
+						<span class="" data-bind="text: vars.curVip() ? vars.curVip().name : ''"></span>
+					</div>
+					<div class="gold halfh" data-bind="style: {'line-height': stat.ui.topLineH() + 'px'}">
+						<img class="" src="assets/images/gold.png" height="18" width="18">
+						<span class="" data-bind="text: vars.kdata.user.golds()">0</span>
+					</div>
+				</div>
+			</div>
+			<div class="master hori fullh" data-bind="style: {'padding-top': stat.ui.topMidPad() + 'px', 'padding-bottom': stat.ui.topMidPad() + 'px'}">
+				<img width="100%" data-bind="
+						event: {vclick: evts.onClickMaster},
+						attr: {src: 'assets/images/master'+(vars.curOptMode() == 2 ? '_p' : '')+'.png'}">
+			</div>
+			<div class="status hori fullh">
+				<div class="fullw halfh" id="status1" data-bind="text: stat.master.statusUp()"></div>
+				<div class="fullw halfh" id="status2" data-bind="text: stat.master.statusDn()"></div>
+			</div>
+		</div>
+		<!-- 主体-棋盘 -->
+		<div class="board" data-bind="event: {
+										vmousedown: evts.onTouchCanvas,
+										vmousemove: evts.onTouchmoveCanvas,
+										vmouseup: evts.onTouchendCanvas
+									}, style: {
+										height: stat.board_fullh() + 'px',
+										'margin-top': stat.ui.titleH() + 'px'
+									}">
+			<canvas id="board-canvas" data-bind="attr: {
+													width: stat.boardsize().w + 'px',
+													height: stat.boardsize().h + 'px'
+												}, event: {
+													vclick: evts.onClickBoard
+												}">
+			</canvas>
+			<div class="arrow arrow-l" data-bind="event: {
+													vclick: evts.onClickMenuArrow
+												}, visible: stat.menu() == 0"></div>
+		</div>
+		<!-- 主体-底部 -->
+		<div class="bottombar fullw" data-bind="style: {height: stat.ui.bottomH() + 'px'}">
+			<div data-bind="visible: vars.curOptMode() != 1">
+				<div class="hori part18" id="undo">
+					<img class="iconbtn" src="assets/images/bbn_undo.jpg" data-bind="
+						style: {
+							width: '100%',
+							height: stat.ui.bottomH() + 'px'
+						},
+						event: {
+							vmousedown: evts.onPressButton.bind($data, 'undo', 1), 
+							vclick: evts.onClickUndo,
+							vmouseup: evts.onPressButton.bind($data, 'undo', 0)
+						}, attr: {
+							src: 'assets/images/bbn_undo' + stat.ui.pressedBnSuffix('undo') + '.jpg' 
+						}">
+				</div>
+				<div class="hori part18" id="turn">
+					<img class="iconbtn" src="assets/images/bbn_turnr.jpg" data-bind="
+						style: {
+							width: '100%',
+							height: stat.ui.bottomH() + 'px'
+						}, event: {
+							vmousedown: evts.onPressButton.bind($data, 'turn', 1), 
+							vclick: evts.onClickTurn,
+							vmouseup: evts.onPressButton.bind($data, 'turn', 0), 
+						}, attr: {
+							src: 'assets/images/bbn_turn' + (vars.kdata.user.opt_qset_redturn() ? 'r' : 'b') + stat.ui.pressedBnSuffix('turn') + '.jpg' 
+						}">
+				</div>
+				<div class="hori part28">
+					<div class="fullw" id="engine" data-bind="
+						style: {
+							height: stat.ui.bottomMidLineH() + 'px', 
+							'line-height': stat.ui.bottomMidLineH() + 'px'
+						}, event: {
+							vclick: evts.onClickEngine, 
+						}, text: vars.curEngine()">
+					</div>
+					<div class="fullw" id="cost" data-bind="style: {height: stat.ui.bottomMidLineH() + 'px', 'line-height': stat.ui.bottomMidLineH() + 'px'}">
+						<img src="assets/images/gold.png" height="18" width="18">
+						<span data-bind="text: vars.curCost(), css: {red: vars.kdata.user.golds() < vars.curCost()}">0</span>
+					</div>
+				</div>
+				<div class="hori part18">
+					<div class="depth" id="depth" data-bind="
+						style: {
+							height: stat.ui.bottomH() + 'px',
+							'line-height': stat.ui.bottomH() + 'px',
+							'background-image': 'url(assets/images/bbn_depth' + stat.ui.pressedBnSuffix('depth') + '.jpg)'
+						},
+						text: vars.kdata.user.opt_qset_depth(),
+						event: {
+							vmousedown: evts.onPressButton.bind($data, 'depth', 1), 
+							vclick: evts.onClickDepth,
+							vmouseup: evts.onPressButton.bind($data, 'depth', 0),
+						}">
+					</div>
+				</div>
+				<div class="hori part18" id="redo">
+					<img class="iconbtn" data-bind="
+						style: {
+							width: '100%',
+							height: stat.ui.bottomH() + 'px'
+						}, event: {
+							vmousedown: evts.onPressButton.bind($data, 'redo', 1), 
+							vclick: evts.onClickRedo, 
+							vmouseup: evts.onPressButton.bind($data, 'redo', 0)
+						}, attr: {
+							src: 'assets/images/bbn_redo' + stat.ui.pressedBnSuffix('redo') + '.jpg' 
+						}">
+				</div>
+			</div>
+			<div class="fullh" id="piecesBar"
+					data-bind="visible: vars.curOptMode() == 1,
+								template: {
+									name: 'tpl_listitem_piece',
+									foreach: vars.diedPieces
+								}, style: {
+									left: stat.ui.pieceBarOffset() + 'px',
+									width: stat.ui.pieceBarWidth() + 'px',
+									padding: stat.ui.bottomPad() + 'px'
+								}, event: {
+									vmousedown: evts.onTouchPieceBar,
+									vmousemove: evts.onTouchmovePieceBar,
+									vmouseup: evts.onTouchendPieceBar
+								}">
+			</div>
+		</div>
+	</div>
+	<div id="fullmasker"></div>
+	<div id="tooltip"><p></p></div>
+
+	<!-- 菜单 -->
+	<div id="sec_menu" class="sec" data-bind="style: {
+												width: (stat.scrsize().w * 0.5) + 'px',
+												height: stat.scrsize().h + 'px',
+												left: (stat.scrsize().w * -0.5) + 'px'
+											},event: {
+												vmousedown: evts.onTouchMenu,
+												vmousemove: evts.onTouchmoveMenu,
+												vmouseup: evts.onTouchendMenu
+											}">
+		<div class="issue">
+			<div class="logo48 hori">
+				<img src="" width="48" height="48" data-bind="attr: {
+																src: env.vars.kdata.user.headimgurl()
+															}, event: {
+																vclick: vars.gotoUser
+															}">
+			</div>
+			<div class="menu-info hori fullh">
+				<div class="nickname">
+					<span id="nickname" data-bind="text: env.vars.kdata.user.nickname()"></span>
+				</div>
+				<div class="message">
+					<img class="" src="assets/images/mi_msg.png" height="18" width="18">
+					<span id="message" style="color: #ccc;">0 新消息</span>
+				</div>
+			</div>
+		</div>
+		<div style="display:-webkit-box;margin:4px;">
+			<div class="float-part50" data-bind="
+					event: {vclick: evts.onClickSlot},
+					attr: {index: -2},
+					css: {pressing: env.vars.selSlotIndex() == -2}">
+				<img src="assets/images/slot_none.png" height="40">
+				<div>新局</div>
+			</div>
+			<div class="float-part50" data-bind="
+					event: {vclick: evts.onClickSlot},
+					attr: {index: -1},
+					css: {pressing: env.vars.selSlotIndex() == -1}">
+				<img src="assets/images/slot_none.png" height="40">
+				<div>残局</div>
+			</div>
+		</div>
+		<div class="sepline"></div>
+		<div id="menulist" data-bind="template: {
+										name: 'tpl_menurow',
+										foreach: vars.menuItems
+									}">
+		</div>
+		<div class="menu-bn-close" data-bind="event: {vclick: main.hideMenu}">
+			<img src="assets/images/close.png">
+		</div>
+	</div>
+
+	<!-- 列表 -->
+	<div id="sec_list" class="sec" data-bind="style: {
+												width: stat.ui.menuSize().w + 'px',
+												height: stat.ui.menuSize().h + 'px',
+												display: stat.list() == 0 ? 'none' : 'block'
+											}">
+		<div class="list-vip" data-bind="template: {
+											name: 'tpl_listitem_vip',
+											foreach: vars.kdata.db.vips
+										}, visible: vars.selMenuItem() && vars.selMenuItem().id == 1 && stat.list_deep() == 0">
+		</div>
+		<div class="list-vip-month" data-bind="template: {
+													name: 'tpl_listitem_vipmonth',
+													foreach: vars.curVipMonths()
+												}, visible: vars.selMenuItem() && vars.selMenuItem().id == 1 && stat.list_deep() == 1">
+		</div>
+		<div class="list-golds" data-bind="template: {
+											name: 'tpl_listitem_golds',
+											foreach: vars.kdata.db.gold_recharges
+										}, visible: vars.selMenuItem() && vars.selMenuItem().id == 2">
+		</div>
+		<div class="list-situation-load" data-bind="visible: vars.selMenuItem() && vars.selMenuItem().id == 3">
+			<div data-bind="template: {
+										name: 'tpl_listitem_slot',
+										foreach: vars.kdata.db.slots
+									}">
+			</div>
+		</div>
+		<div class="list-situation-save" data-bind="template: {
+											name: 'tpl_listitem_slot',
+											foreach: vars.kdata.db.slots
+										}, visible: vars.selMenuItem() && vars.selMenuItem().id == 4">
+		</div>
+		<div class="list-options"  data-bind="visible: vars.selMenuItem() && vars.selMenuItem().id == 5">
+			<div>
+			    <input type="checkbox" id="chkAutoSwitch" class="css-checkbox" data-bind="
+			    	checked: env.vars.kdata.user.opt_master_autoswitch">
+			    <label for="chkAutoSwitch" class="css-label">支招后自动交换先手</label>
+			</div>
+			<div>
+				<input type="checkbox" id="chkAutoMasterGo" class="css-checkbox" data-bind="
+			    	checked: env.vars.kdata.user.opt_master_automove">
+				<label for="chkAutoMasterGo" class="css-label">支招后自动走子</label>
+			</div>
+			<div>
+				<input type="checkbox" id="chkShowMasterAnimation" class="css-checkbox" data-bind="
+					checked: env.vars.kdata.user.opt_master_animation">
+				<label for="chkShowMasterAnimation" class="css-label">显示支招过程动画</label>
+			</div>
+			<div>
+				<input type="checkbox" id="chkReverseView" class="css-checkbox" data-bind="
+					checked: env.vars.kdata.user.opt_reverseview">
+				<label for="chkReverseView" class="css-label">翻转棋局</label>
+			</div>
+			<div>
+				<input type="checkbox" id="chkOpenSound" class="css-checkbox" data-bind="
+					checked: env.vars.kdata.user.opt_opensound">
+				<label for="chkOpenSound" class="css-label">开启音效</label>
+			</div>
+		</div>
+	</div>
+	<script id='tpl_menurow' type='text/html'>
+		<div class="menu-row" data-bind="css: {
+											pressing: env.vars.selMenuItem() && id == env.vars.selMenuItem().id
+										}, event: {
+											vclick: env.vars.selectMenuItem(id)
+										}">
+			<img src="assets/images/${logo}" height="24" width="24" data-bind="attr: {id: 'menu_img_'+id}">
+			<div data-bind="attr: {id: 'menu_name_'+id}">${name}</div>
+			<div class="hori-r">${opt}</div>
+		</div>
+		<div class="sepline" data-bind="visible: sep"></div>
+	</script>
+	<script id='tpl_listitem_vip' type='text/html'>
+		<div class="list-row" data-bind="css: {
+											pressing: env.vars.selVip() && id() == env.vars.selVip().id
+										}, event: {
+											vclick: env.vars.selectVip(id())
+										}, visible: id() > env.vars.curVip().id">
+			<img height="24" width="24" data-bind="attr: {src: 'assets/images/vip'+id()+'.png'}">
+			<div class="inline">${name}</div>
+			<div data-bind="text: env.vars.getLimitStr(max_depth())"></div>
+			<div class="sepline"></div>
+		</div>
+	</script>
+	<script id='tpl_listitem_vipmonth' type='text/html'>
+		<div class="list-row" data-bind="css: {
+											pressing: env.vars.selVipMonth() && id == env.vars.selVip().id && month == env.vars.selVipMonth().month
+										}, event: {
+											vclick: env.vars.selectVipMonth($data)
+										}">
+			<img height="24" width="24" data-bind="attr: {src: 'assets/images/vip' + env.vars.selVip().id + '.png'}">
+			<div class="inline" data-bind="text: env.vars.selVip().name+' '+month+'个月'"></div>
+			<div data-bind="text: '金额：'+rmb+'元'"></div>
+			<div class="sepline"></div>
+		</div>
+	</script>
+	<script id='tpl_listitem_golds' type='text/html'>
+		<div class="issue" data-bind="css: {
+											pressing: env.vars.selGoldpay() && amount == env.vars.selGoldpay().amount
+										}, event: {
+											vclick: env.vars.selectGoldpay($data)
+										}">
+			<div class="logo40 hori">
+				<img src="assets/images/gold.png" width="40" height="40">
+			</div>
+			<div class="menu-info hori fullh">
+				<div class=".menu-info">
+					<div class="inline">${amount}</div>
+				</div>
+				<div class=".menu-info">
+					<div data-bind="text: '金额：'+rmb()+'元'"></div>
+				</div>
+			</div>
+		</div>
+		<div class="sepline"></div>
+	</script>
+	<script id='tpl_issue' type='text/html'>
+		<div class="issue">
+			<div class="logo40 hori">
+				<img width="100%" height="100%" data-bind="attr: {src: 'assets/images/' + logo}">
+			</div>
+			<div class="menu-info hori fullh">
+				<div class=".menu-info">
+					<div class="inline">${title}</div>
+				</div>
+				<div class=".menu-info">
+					<div>${desc}</div>
+				</div>
+			</div>
+		</div>
+		<div class="sepline" data-bind="visible: showline"></div>
+	</script>
+	<script id='tpl_listitem_slot' type='text/html'>
+		<div data-bind="visible: env.vars.selMenuItem() && (env.vars.selMenuItem().id == 4 || data() != null)">
+			<div class="issue" data-bind="
+					css: {pressing: env.vars.selSlotIndex() == $index()}, 
+					attr: {index: $index()}, 
+					event: {vclick: env.evts.onClickSlot}">
+				<div class="logo40 hori">
+					<img src="assets/images/slot_none.png" width="40" height="40" data-bind="attr: {src: 'assets/images/' + env.vars.getSlotIcon($index())}">
+				</div>
+				<div class="menu-info hori fullh">
+					<div class=".menu-info">
+						<div class="inline" data-bind="text: name"></div>
+					</div>
+					<div class=".menu-info">
+						<div data-bind="text: env.vars.getSlotDesc($index())"></div>
+					</div>
+				</div>
+			</div>
+			<div class="sepline"></div>
+		</div>
+	</script>
+	<script id="tpl_listitem_piece" type="text/html">
+		<div class="hori" data-bind="visible: true">
+			<div index="-2" data-bind="attr: {
+											index: $index()
+										}, style: {
+											width: env.stat.ui.pieceBarInnerH() + 'px',
+											height: env.stat.ui.pieceBarInnerH() + 'px',
+											'background-image': (type == -1 ? 'url(assets/images/delete.png)' : 'url(assets/images/chess.png)'),
+											'background-position-x': (type == -1 ? 0 : ((-1 * type * env.stat.ui.pieceBarInnerH()) + 'px')),
+											'background-position-y': (side <= 0 ? 0 : env.stat.ui.pieceBarInnerH()) + 'px',
+											'background-size': type == -1 ? '100%' : '700%'
+										}, event: {
+											vclick: env.evts.onClickDiedPiece
+										}">
+			</div>
+		</div>
+	</script>
+
+	<!-- modal-options -->
+	<div class="modal" id="dlgList" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="dlgListTitle">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+					<h4 class="modal-title" id="dlgListTitle" data-bind="text: stat.ui.modalListTitle()"></h4>
+				</div>
+				<div class="modal-body" style="overflow:auto;">
+					<div data-bind="template: {
+										name: 'tpl_modallist',
+										foreach: stat.ui.modalListItems
+									}, style: {
+										height: stat.ui.modalListHeight() + 'px'
+									}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script id="tpl_modallist" type="text/html">
+		<div class="depth-item" data-bind="html: $data, 
+											css: {
+												focusitem: env.stat.ui.chosenModalItem() == $index() + 1
+											}, event: {
+												vclick: env.evts.onChoseModalItem.bind($index() + 1) 
+											}">
+		</div>
+	</script>
+
+	<audio id="snd_select" src="assets/media/select.mp3">
+		<source type="audio/mp3" src="assets/media/select.mp3"/>
+		<object width="60" height="60" type="application/x-shockwave-flash" data="assets/media/flashmediaelement.swf">
+			<param name="movie" value="assets/media/flashmediaelement.swf"/>
+			<param name="wmode" value="transparent"/>
+			<param name="flashvars" value="controls=false&file=assets/media/select.mp3"/>
+			<div id="altForItem1431" class="noPlugin">Missing audio plugin.</div>
+		</object>
+	</audio>
+	<audio id="snd_move1" src="assets/media/move1.mp3">
+		<source type="audio/mp3" src="assets/media/move1.mp3"/>
+		<object width="60" height="60" type="application/x-shockwave-flash" data="assets/media/flashmediaelement.swf">
+			<param name="movie" value="assets/media/flashmediaelement.swf"/>
+			<param name="wmode" value="transparent"/>
+			<param name="flashvars" value="controls=false&file=assets/media/move1.mp3"/>
+			<div id="altForItem1431" class="noPlugin">Missing audio plugin.</div>
+		</object>
+	</audio>
+	<audio id="snd_move2" src="assets/media/move2.mp3">
+		<source type="audio/mp3" src="assets/media/move2.mp3"/>
+		<object width="60" height="60" type="application/x-shockwave-flash" data="assets/media/flashmediaelement.swf">
+			<param name="movie" value="assets/media/flashmediaelement.swf"/>
+			<param name="wmode" value="transparent"/>
+			<param name="flashvars" value="controls=false&file=assets/media/move2.mp3"/>
+			<div id="altForItem1431" class="noPlugin">Missing audio plugin.</div>
+		</object>
+	</audio>
+	<audio id="snd_eat" src="assets/media/eat.mp3">
+		<source type="audio/mp3" src="assets/media/eat.mp3"/>
+		<object width="60" height="60" type="application/x-shockwave-flash" data="assets/media/flashmediaelement.swf">
+			<param name="movie" value="assets/media/flashmediaelement.swf"/>
+			<param name="wmode" value="transparent"/>
+			<param name="flashvars" value="controls=false&file=assets/media/eat.mp3"/>
+			<div id="altForItem1431" class="noPlugin">Missing audio plugin.</div>
+		</object>
+	</audio>
+	<audio id="snd_new" src="assets/media/new.mp3">
+		<source type="audio/mp3" src="assets/media/new.mp3"/>
+		<object width="60" height="60" type="application/x-shockwave-flash" data="assets/media/flashmediaelement.swf">
+			<param name="movie" value="assets/media/flashmediaelement.swf"/>
+			<param name="wmode" value="transparent"/>
+			<param name="flashvars" value="controls=false&file=assets/media/new.mp3"/>
+			<div id="altForItem1431" class="noPlugin">Missing audio plugin.</div>
+		</object>
+	</audio>
+</body>
+</html>

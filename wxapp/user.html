@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="象棋支招大师 个人中心">
+    <meta name="author" content="">
+    <title>象棋支招大师 个人中心</title>
+
+    <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/user.css?_dc=aaaaab">
+    <script src="assets/lib/jquery/jquery-2.1.0.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/knockout-3.2.0.js"></script>
+    <script src="assets/lib/vmouse.js?_dc=aaaa"></script>
+    <script src="assets/lib/jweixin-1.0.0.js"></script>
+    <script src="assets/js/defines.js?_dc=ewmqiler"></script>
+    <script src="assets/js/app.js?_dc=msklermm"></script>
+    <script src="assets/js/user.js?_dc=emlzerew"></script>
+  </head>
+
+  <body>
+    <div class="btn-group" role="group" style="margin-bottom:12px;">
+      <button type="button" class="btn btn-warning" style="margin-top:5px;" id="go-game" 
+        data-bind="event: {vclick: evts.gotoGame}">
+        回到主页
+      </button>
+      <button class="btn btn-danger" style="margin-top:5px;">
+        个人中心
+      </button>
+      <button type="button" class="btn btn-warning" style="margin-top:5px;" id="go-ticket" 
+        data-bind="event: {vclick: evts.gotoTicket}">
+        凭券中心
+      </button>
+    </div>
+
+    <div class="list-group">
+      <a href="#" class="list-group-item active">
+        我的信息
+      </a>
+      <div data-bind="template: {
+                          name: 'tpl_info',
+                          foreach: info
+                      }"></div>
+    </div>
+    <div class="list-group">
+      <a href="#" class="list-group-item active">
+        凭券信息
+      </a>
+      <div data-bind="template: {
+                          name: 'tpl_ticket',
+                          foreach: tickets
+                      }"></div>
+    </div>
+
+    <script id="tpl_info" type="text/html">
+      <a href="#" class="list-group-item" data-bind="event: {
+                                                        vclick: env.evts.clickItem
+                                                      }, style: {
+                                                        height: img != null ? '64px' : '41px',
+                                                        'line-height': img != null ? '40px' : '20px',
+                                                        color: ex.color ? ex.color : '#000',
+                                                        'font-weight': ex.bold ? 'bold' : 'normal'
+                                                      }, attr: {
+                                                        href: ex.href ? ex.href : '#',
+                                                      }">
+        <div style="float:left" data-bind="text: title"></div>
+        <div style="float:right" data-bind="text: value"></div>
+        <img class="badge-icon" data-bind="visible: img != null,
+                                           attr: {
+                                              src: img ? img : 'assets/images/logo.jpg'
+                                           }">
+      </a>
+    </script>
+    <script id="tpl_ticket" type="text/html">
+      <a href="#" class="list-group-item" data-bind="event: {
+                                                      vclick: env.evts.clickItem
+                                                    }">
+        <img class="badge-icon" style="float:left" data-bind="attr: {
+                                              src: img
+                                           }">
+        <h4 class="list-group-item-heading" data-bind="html: title"></h4>
+        <p class="list-group-item-text" data-bind="html: value"></p>
+      </a>
+    </script>
+
+    <div class="modal" id="dlgList" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="dlgListTitle">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <img class="modal-logo" data-bind="attr: {
+                                                  src: 'assets/images/' + curTicket().ticket.logo
+                                               }">
+            <h4 class="modal-title" id="dlgListTitle" data-bind="text: curTicket().ticket.name"></h4>
+          </div>
+          <div class="modal-body" style="overflow:auto;">
+            <p class="bold">简介：</p>
+            <p data-bind="text: curTicket().ticket.description"></p>
+            <div class="btn btn-danger option" style="width:100%;" data-bind="event: {vclick: evts.discardTicket}">
+                <i class="glyphicon glyphicon-remove"></i>
+                <span>丢弃</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

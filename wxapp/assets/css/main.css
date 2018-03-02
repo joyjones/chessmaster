@@ -1,0 +1,275 @@
+body {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font-family: '微软雅黑';
+	overflow: hidden;
+	background-image: url(../images/bg.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-color: #eceadb;
+}
+.fullw { width: 100% }
+.fullh { height: 100% }
+.halfh { height: 50% }
+.hori { float: left; }
+.hori-r { float: right; }
+.part18 { width: 18%; }
+.part28 { width: 28%; }
+.inline { display: inline; }
+.sepline { border-top:1px solid #555; margin: 0px 8px; }
+.abspos { position: absolute; }
+.flex {display: flex;}
+.red { color: red; }
+.float-part50 {
+	text-align: center;
+	width: 50%;
+}
+
+#sec_main{
+	position: absolute;
+	background-image: url(../images/board_bg.jpg);
+	background-size: 100%;
+	background-repeat: repeat-y;
+}
+.sec{
+	display: none;
+}
+.topbar {
+	background-image: url(../images/bar_top.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+.topbar .user { width: 35%; }
+.topbar .user .head { width: 40%; }
+.topbar .user .info { width: 60%; white-space: nowrap; }
+.topbar .master { width: 30%; text-align: center; }
+.topbar .status {
+	width: 35%;
+	background-image: url(../images/bg_tr.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position-y: 45%;
+	padding: 2.7%;
+}
+.board { text-align: center; }
+.board canvas {
+	background-image: url(../images/board_grid.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+.bottombar {
+	position: fixed;
+	bottom: 0;
+	text-align: center;
+	background-image: url(../images/bar_bottom.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+#piecesBar {
+	position: absolute;
+	overflow: visible;
+}
+#sec_menu, #sec_list {
+	background-color: rgba(0,0,0,0.75);
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	border: 1px solid rgba(0,0,0,0.25);
+}
+
+.issue {
+	display: inline-block;
+	height: 52px;
+	padding: 8px;
+	width: 100%;
+}
+.issue .logo48 {
+	width: 48px;
+	height: 48px;
+}
+.logo40 {
+	width: 40px;
+	height: 40px;
+}
+.menu-info {
+	padding-left: 8px;
+}
+.menu-info .nickname {
+	height: 50%;
+	line-height: 24px;
+}
+.menu-info .message {
+	height: 50%;
+	line-height: 24px;
+}
+.menu-row {
+	padding: 8px 8px;
+}
+.menu-row img {
+	display: inline;
+	margin-right: 8px;
+}
+.menu-row div{
+	display: inline;
+}
+.menu-bn-close{
+	background-color: rgba(160,160,160,0.6);
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+.pressing {
+	background-color: rgba(128,128,200,0.7);
+}
+
+.list-row {
+	padding: 8px;
+}
+.list-row img{
+	display: inline;
+}
+.list-logo-lg{
+	width: 48px;
+	height: 48px;
+}
+
+input[type=checkbox].css-checkbox {
+	position: absolute;
+	z-index: -1000;
+	left: -1000px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	width: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+}
+input[type=checkbox].css-checkbox + label.css-label {
+	padding-left:27px;
+	height: 22px; 
+	display: inline-block;
+	/*line-height: 22px;*/
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	/*font-size: 22px;*/
+	vertical-align: middle;
+	cursor: pointer;
+}
+input[type=checkbox].css-checkbox:checked + label.css-label {
+	background-position: 0 -22px;
+}
+label.css-label {
+	background-image: url(http://csscheckbox.com/checkboxes/u/csscheckbox_b8670e397159419c04208e1a54ed6831.png);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+select{
+	background: transparent;
+	border: none;
+	-webkit-appearance: none;
+}
+#engine{
+	color: #fff;
+	text-align: center;
+}
+.depth{
+	color: black;
+	width: 100%;
+	font-weight: bold;
+	font-size: 1em;
+	text-align: center;
+	background-repeat: no-repeat;
+	line-height: 3.5em;
+	background-size: 100%;
+}
+.focusitem{
+	background-color: #88f;
+}
+.modal-content{
+	background-color: rgba(0, 0, 0, 0.9);
+}
+.depth-item{
+	padding: 8px;
+}
+#fullmasker{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+}
+#tooltip{
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.7);
+	font-size: 1.2em;
+	font-weight: bold;
+	color: gold;
+	line-height: 2em;
+	display: none;
+	z-index: 9999;
+}
+.arrow{
+	position: absolute;
+	top: 45%;
+	width: 15px;
+	height: 30px;
+	background-image: url(../images/arrow.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	animation-name: flashing;
+	animation-duration: 0.8s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	/* Firefox: */
+	-moz-animation-name: flashing;
+	-moz-animation-duration: 0.8s;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-direction: alternate;
+	/* Safari 和 Chrome: */
+	-webkit-animation-name: flashing;
+	-webkit-animation-duration: 0.8s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-direction: alternate;
+	/* Opera: */
+	-o-animation-name: flashing;
+	-o-animation-duration: 0.8s;
+	-o-animation-iteration-count: infinite;
+	-o-animation-direction: alternate;
+	z-index: 9000;
+}
+.arrow-l{
+	left: 4px;
+}
+@keyframes flashing
+{
+	0%   {opacity: 0;}
+	100%   {opacity: 1;}
+}
+@-moz-keyframes flashing /* Firefox */
+{
+	0%   {opacity: 0;}
+	100%   {opacity: 1;}
+}
+@-webkit-keyframes flashing /* Safari 和 Chrome */
+{
+	0%   {opacity: 0;}
+	100%   {opacity: 1;}
+}
+@-o-keyframes flashing /* Opera */
+{
+	0%   {opacity: 0;}
+	100%   {opacity: 1;}
+}

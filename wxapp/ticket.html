@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="象棋支招大师 凭券中心">
+    <meta name="author" content="">
+    <title>象棋支招大师 凭券中心</title>
+
+    <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/ticket.css?_dc=aaaaaa">
+    <script src="assets/lib/jquery/jquery-2.1.0.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/knockout-3.2.0.js"></script>
+    <script src="assets/lib/vmouse.js?_dc=aaaa"></script>
+    <script src="assets/lib/jweixin-1.0.0.js"></script>
+    <script src="assets/js/defines.js?_dc=mkovvwamk"></script>
+    <script src="assets/js/app.js?_dc=uriefldsk"></script>
+    <script src="assets/js/ticket.js?_dc=amekrlew"></script>
+  </head>
+
+  <body>
+    <div class="btn-group" role="group" style="margin-bottom:12px;">
+      <button class="btn btn-warning" style="margin-top:5px;" id="go-game" 
+        data-bind="event: {vclick: evts.gotoGame}">
+        回到主页
+      </button>
+      <button class="btn btn-warning" style="margin-top:5px;" id="go-user" 
+        data-bind="event: {vclick: evts.gotoUser}">
+        个人中心
+      </button>
+      <button type="button" class="btn btn-danger" style="margin-top:5px;">
+        凭券中心
+      </button>
+    </div>
+
+    <div class="list-group">
+      <a href="#" class="list-group-item active">
+        凭券领取
+      </a>
+      <div data-bind="template: {
+                          name: 'tpl_ticket',
+                          foreach: tickets
+                      }"></div>
+    </div>
+
+    <div class="modal" id="dlgList" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="dlgListTitle">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <img class="modal-logo" data-bind="attr: {
+                                                  src: 'assets/images/' + curTicket().logo
+                                               }">
+            <h4 class="modal-title" id="dlgListTitle" data-bind="text: curTicket().name"></h4>
+          </div>
+          <div class="modal-body" style="overflow:auto;">
+            <p class="bold">简介：</p>
+            <p data-bind="text: curTicket().description"></p>
+            <p class="bold">剩余：</p>
+            <p>
+              <span data-bind="text: (curTicket().distributed_count - curTicket().using_count)"></span>张
+            </p>
+            <p class="bold">说明：</p>
+            <div data-bind="html: evts.getTerms()"></div>
+            <div class="btn btn-success option" style="width:100%;" data-bind="event: {vclick: evts.clickRequire}">
+                <i class="glyphicon glyphicon-check"></i>
+                <span>领取</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script id="tpl_ticket" type="text/html">
+      <a href="#" class="list-group-item" data-bind="event: {vclick: env.evts.clickTicket}">
+        <span class="badge" data-bind="visible: distributed_count > using_count,
+                                       text: '剩余'+(distributed_count - using_count)+'张'">
+        </span>
+        <img class="badge-icon" data-bind="visible: logo != null,
+                                           attr: {
+                                              src: 'assets/images/' + (logo ? logo : 'logo.jpg')
+                                           }">
+        <h4 class="list-group-item-heading" data-bind="text: name"></h4>
+        <p class="list-group-item-text" data-bind="text: description"></p>
+      </a>
+    </script>
+  </body>
+</html>

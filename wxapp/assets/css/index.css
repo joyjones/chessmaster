@@ -1,0 +1,8 @@
+body{
+	margin: 0;
+	padding: 0;
+	background-image: url(../images/welcome.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-color: #eceadb;
+}
